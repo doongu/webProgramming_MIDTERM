@@ -3,9 +3,10 @@ var ctx = canvas.getContext('2d');
 var rightPressed = false;
 var leftPressed = false;
 
+
 var goldshipImg = new Image();
 goldshipImg.src = "./media/goldship.png";
-
+var spaceStatus = false;
 var shipSize = 40;
 var shipImg = new Image();
 shipImg.src = "./media/ship.png";
@@ -29,28 +30,56 @@ heartImg.src = "./media/heart.png";
 var heartCount = 3;
 var heartStatus = [];
 
-for (var i = 0; i < heartCount; i++) {
-    heartStatus[i] = {
-        x: i * 30,
-        y: 0,
-        w: heartSize,
-        h: heartSize,
-        img: heartImg,
-        status: 0
-    }
-}
+// for (var i = 0; i < heartCount; i++) {
+//     heartStatus[i] = {
+//         x: i * 30,
+//         y: 0,
+//         w: heartSize,
+//         h: heartSize,
+//         img: heartImg,
+//         status: 0
+//     }
+// }
 
 
-for (var i = 0; i < enemyCount; i++) {
-    enemyStatus[i] = {
-        x: 0,
-        y: 0,
-        w: enemySize,
-        h: enemySize,
-        img: enemyImg,
-        status: 0
-    };
+// for (var i = 0; i < enemyCount; i++) {
+//     enemyStatus[i] = {
+//         x: 0,
+//         y: 0,
+//         w: enemySize,
+//         h: enemySize,
+//         img: enemyImg,
+//         status: 0
+//     };
+// }
+
+
+function init(spaceStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount ){
+    if (spaceStatus){
+        for (var i = 0; i < heartCount; i++) {
+            heartStatus[i] = {
+                x: i * 30,
+                y: 0,
+                w: heartSize,
+                h: heartSize,
+                img: heartImg,
+                status: 0
+            }
+        }
+        for (var i = 0; i < enemyCount; i++) {
+            enemyStatus[i] = {
+                x: 0,
+                y: 0,
+                w: enemySize,
+                h: enemySize,
+                img: enemyImg,
+                status: 0
+            }
 }
+return false;
+}
+}
+
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
@@ -60,17 +89,26 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if (e.code == 'ArrowRight') {
         rightPressed = true;
-    } else if (e.code == 'ArrowLeft') {
+    }
+     if (e.code == 'ArrowLeft') {
         leftPressed = true;
+    }
+    if (e.code =='Space'){
+
+        spaceStatus = true;
     }
 }
 
 function keyUpHandler(e) {
     if (e.code == 'ArrowRight') {
         rightPressed = false;
-    } else if (e.code == 'ArrowLeft') {
+    } 
+    if (e.code == 'ArrowLeft') {
         leftPressed = false;
     }
+    // if (e.key =='Space'){
+    //     spaceStatus = false;
+    // }
 }
 function superPower() {
     ship.superPower = true;
@@ -149,14 +187,14 @@ function checkheart() {
         }
     }
     if (count == heartCount) {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 
 function deleteHeart() {
-    for (var i = 0; i < enemyCount; i++) {
+    for (var i = 0; i < heartCount; i++) {
         if (heartStatus[i].status == 0) {
             heartStatus[i].status = 1;
             return;
@@ -191,19 +229,26 @@ function drowShip() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawAllEnemies();
-    drowHeart();
-    drowShip();
+
     if (checkheart()) {
-        return 1;
+        spaceStatus = init(spaceStatus,  heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
     }
+    else{
+        drawAllEnemies();
+        drowHeart();
+        drowShip();
+        
     if (checkCrash()) {
+        
+        
         deleteHeart();
         ctx.fillText("Crash!!", 10, 20);
+        
     }
+}
 
     requestAnimationFrame(draw);
 }
 
-
+init(true, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
 draw();
