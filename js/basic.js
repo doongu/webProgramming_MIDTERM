@@ -4,9 +4,12 @@ var rightPressed = false;
 var leftPressed = false;
 
 
+<<<<<<< HEAD
 var shipImg = new Image();
 var enemyImg = new Image();
 var heartImg = new Image();
+=======
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 var goldshipImg = new Image();
 
 
@@ -14,6 +17,7 @@ shipImg.src = "./media/ship.png";
 enemyImg.src = "./media/enemy.png";
 heartImg.src = "./media/heart.png";
 goldshipImg.src = "./media/goldship.png";
+<<<<<<< HEAD
 
 
 var shipSize = 40,
@@ -60,11 +64,88 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
 	}
 }
 
+=======
+var spaceStatus = false;
+var shipSize = 40;
+var shipImg = new Image();
+shipImg.src = "./media/ship.png";
+var ship = {
+    x: (canvas.width - shipSize) / 2,
+    y: canvas.height - shipSize,
+    w: shipSize,
+    h: shipSize,
+    superPower: false
+};
+var enemySize = 40;
+var enemyImg = new Image();
+enemyImg.src = "./media/enemy.png";
+var enemyCount = 10;
+var enemyStatus = [];
+
+
+var heartSize = 100;
+var heartImg = new Image();
+heartImg.src = "./media/heart.png";
+var heartCount = 3;
+var heartStatus = [];
+
+// for (var i = 0; i < heartCount; i++) {
+//     heartStatus[i] = {
+//         x: i * 30,
+//         y: 0,
+//         w: heartSize,
+//         h: heartSize,
+//         img: heartImg,
+//         status: 0
+//     }
+// }
+
+
+// for (var i = 0; i < enemyCount; i++) {
+//     enemyStatus[i] = {
+//         x: 0,
+//         y: 0,
+//         w: enemySize,
+//         h: enemySize,
+//         img: enemyImg,
+//         status: 0
+//     };
+// }
+
+
+function init(spaceStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount ){
+    if (spaceStatus){
+        for (var i = 0; i < heartCount; i++) {
+            heartStatus[i] = {
+                x: i * 30,
+                y: 0,
+                w: heartSize,
+                h: heartSize,
+                img: heartImg,
+                status: 0
+            }
+        }
+        for (var i = 0; i < enemyCount; i++) {
+            enemyStatus[i] = {
+                x: 0,
+                y: 0,
+                w: enemySize,
+                h: enemySize,
+                img: enemyImg,
+                status: 0
+            }
+}
+return false;
+}
+}
+
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
 
 function keyDownHandler(e) {
+<<<<<<< HEAD
 	if (e.code == 'ArrowRight') {
 		rightPressed = true;
 	}
@@ -86,6 +167,30 @@ function keyUpHandler(e) {
 	if (e.key == 'Space') {
 		shipStatus = false;
 	}
+=======
+    if (e.code == 'ArrowRight') {
+        rightPressed = true;
+    }
+     if (e.code == 'ArrowLeft') {
+        leftPressed = true;
+    }
+    if (e.code =='Space'){
+
+        spaceStatus = true;
+    }
+}
+
+function keyUpHandler(e) {
+    if (e.code == 'ArrowRight') {
+        rightPressed = false;
+    } 
+    if (e.code == 'ArrowLeft') {
+        leftPressed = false;
+    }
+    // if (e.key =='Space'){
+    //     spaceStatus = false;
+    // }
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 }
 
 
@@ -164,6 +269,7 @@ function drawAllEnemies() {
 }
 
 function checkheart() {
+<<<<<<< HEAD
 	var count = 0;
 	for (var i = 0; i < heartCount; i++) {
 		if (heartStatus[i].status == 1) {
@@ -174,16 +280,37 @@ function checkheart() {
 		return true;
 	}
 	return false;
+=======
+    var count = 0;
+    for (var i = 0; i < heartCount; i++) {
+        if (heartStatus[i].status == 1) {
+            count += 1;
+        }
+    }
+    if (count == heartCount) {
+        return true;
+    }
+    return false;
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 }
 
 
 function deleteHeart() {
+<<<<<<< HEAD
 	for (var i = 0; i < heartCount; i++) {
 		if (heartStatus[i].status == 0) {
 			heartStatus[i].status = 1;
 			return;
 		}
 	}
+=======
+    for (var i = 0; i < heartCount; i++) {
+        if (heartStatus[i].status == 0) {
+            heartStatus[i].status = 1;
+            return;
+        }
+    }
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 }
 
 function drowHeart() {
@@ -211,7 +338,28 @@ function drowShip() {
 }
 
 function draw() {
+<<<<<<< HEAD
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+=======
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (checkheart()) {
+        spaceStatus = init(spaceStatus,  heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
+    }
+    else{
+        drawAllEnemies();
+        drowHeart();
+        drowShip();
+        
+    if (checkCrash()) {
+        
+        
+        deleteHeart();
+        ctx.fillText("Crash!!", 10, 20);
+        
+    }
+}
+>>>>>>> e6f75751dca609189db7a442c530701febd74dd9
 
 	if (checkheart()) {
 		shipStatus = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
