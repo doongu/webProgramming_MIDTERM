@@ -55,7 +55,6 @@ function keyUpHandler(e) {
 	}
 }
 
-
 function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount) {
 	if (shipStatus) {
         ship = {
@@ -90,6 +89,7 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
 }
 
 
+
 function drowShip() {
 	if (ship.superPower) {
 		ctx.drawImage(goldshipImg, ship.x, ship.y, ship.w, ship.h);
@@ -104,6 +104,12 @@ function drowShip() {
 	}
 }
 
+function superPower() {
+	ship.superPower = true;
+	setTimeout(function() {
+		ship.superPower = false;
+	}, 2000);
+}
 
 function createNewEnemy(probWeight, gameLevel) {
 	if (Math.floor(Math.random() * probWeight) < gameLevel) {
@@ -142,14 +148,6 @@ function drawAllEnemies() {
 	}
 	createNewEnemy(30, 1);
 }
-
-function superPower() {
-	ship.superPower = true;
-	setTimeout(function() {
-		ship.superPower = false;
-	}, 2000);
-}
-
 
 function checkCrash() {
 	for (var i = 0; i < enemyCount; i++) {
@@ -208,6 +206,7 @@ function drowHeart() {
 			ctx.drawImage(heartStatus[i].img, heartStatus[i].x, heartStatus[i].y, heartStatus[i].w, heartStatus[i].h);
 		}
 	}
+
 }
 
 
