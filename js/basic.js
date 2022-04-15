@@ -27,6 +27,35 @@ var heartSize = 100,
 	heartStatus = [];
 
 
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+
+function keyDownHandler(e) {
+	if (e.code == 'ArrowRight') {
+		rightPressed = true;
+	}
+	if (e.code == 'ArrowLeft') {
+		leftPressed = true;
+	}
+	if (e.code == 'Space') {
+		shipStatus = true;
+	}
+}
+
+function keyUpHandler(e) {
+	if (e.code == 'ArrowRight') {
+		rightPressed = false;
+	}
+	if (e.code == 'ArrowLeft') {
+		leftPressed = false;
+	}
+	if (e.key == 'Space') {
+		shipStatus = false;
+	}
+}
+
+
 function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount) {
 	if (shipStatus) {
         ship = {
@@ -60,70 +89,21 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
 	}
 }
 
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
 
-
-function keyDownHandler(e) {
-	if (e.code == 'ArrowRight') {
-		rightPressed = true;
+function drowShip() {
+	if (ship.superPower) {
+		ctx.drawImage(goldshipImg, ship.x, ship.y, ship.w, ship.h);
+		// continue;
+	} else {
+		ctx.drawImage(shipImg, ship.x, ship.y, ship.w, ship.h);
 	}
-	if (e.code == 'ArrowLeft') {
-		leftPressed = true;
-	}
-	if (e.code == 'Space') {
-		shipStatus = true;
-	}
-}
-
-function keyUpHandler(e) {
-	if (e.code == 'ArrowRight') {
-		rightPressed = false;
-	}
-	if (e.code == 'ArrowLeft') {
-		leftPressed = false;
-	}
-	if (e.key == 'Space') {
-		shipStatus = false;
+	if (rightPressed && ship.x < canvas.width - shipSize) {
+		ship.x += 10;
+	} else if (leftPressed && ship.x > 0) {
+		ship.x -= 10;
 	}
 }
 
-
-
-
-function superPower() {
-	ship.superPower = true;
-	setTimeout(function() {
-		ship.superPower = false;
-	}, 2000);
-}
-
-function checkCrash() {
-	for (var i = 0; i < enemyCount; i++) {
-		var enemy = enemyStatus[i];
-		if (enemy.status == 0) {
-			continue;
-		}
-		if (ship.superPower) {
-			continue;
-		}
-		ship.rx = ship.x + ship.w;
-		ship.by = ship.y + ship.h;
-		enemy.rx = enemy.x + enemy.w;
-		enemy.by = enemy.y + enemy.h;
-
-		if ((ship.x >= enemy.x && ship.x <= enemy.rx) ||
-			(ship.rx >= enemy.x && ship.rx <= enemy.rx)) {
-			if ((ship.y >= enemy.y && ship.y <= enemy.by) ||
-				(ship.by >= enemy.y && ship.by <= enemy.by)) {
-				enemy.status = 0;
-				superPower();
-				return 1;
-			}
-		}
-	}
-	return 0;
-}
 
 function createNewEnemy(probWeight, gameLevel) {
 	if (Math.floor(Math.random() * probWeight) < gameLevel) {
@@ -163,6 +143,42 @@ function drawAllEnemies() {
 	createNewEnemy(30, 1);
 }
 
+function superPower() {
+	ship.superPower = true;
+	setTimeout(function() {
+		ship.superPower = false;
+	}, 2000);
+}
+
+
+function checkCrash() {
+	for (var i = 0; i < enemyCount; i++) {
+		var enemy = enemyStatus[i];
+		if (enemy.status == 0) {
+			continue;
+		}
+		if (ship.superPower) {
+			continue;
+		}
+		ship.rx = ship.x + ship.w;
+		ship.by = ship.y + ship.h;
+		enemy.rx = enemy.x + enemy.w;
+		enemy.by = enemy.y + enemy.h;
+
+		if ((ship.x >= enemy.x && ship.x <= enemy.rx) ||
+			(ship.rx >= enemy.x && ship.rx <= enemy.rx)) {
+			if ((ship.y >= enemy.y && ship.y <= enemy.by) ||
+				(ship.by >= enemy.y && ship.by <= enemy.by)) {
+				enemy.status = 0;
+				superPower();
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+
 function checkheart() {
 	var count = 0;
 	for (var i = 0; i < heartCount; i++) {
@@ -192,23 +208,8 @@ function drowHeart() {
 			ctx.drawImage(heartStatus[i].img, heartStatus[i].x, heartStatus[i].y, heartStatus[i].w, heartStatus[i].h);
 		}
 	}
-
 }
 
-
-function drowShip() {
-	if (ship.superPower) {
-		ctx.drawImage(goldshipImg, ship.x, ship.y, ship.w, ship.h);
-		// continue;
-	} else {
-		ctx.drawImage(shipImg, ship.x, ship.y, ship.w, ship.h);
-	}
-	if (rightPressed && ship.x < canvas.width - shipSize) {
-		ship.x += 10;
-	} else if (leftPressed && ship.x > 0) {
-		ship.x -= 10;
-	}
-}
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
