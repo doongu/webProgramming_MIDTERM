@@ -2,7 +2,9 @@ var canvas = document.getElementById('gameCanvas');
 var ctx = canvas.getContext('2d');
 var rightPressed = false;
 var leftPressed = false;
-
+var init_start = true;
+var init_text_value = true;
+var scoreValue = 0;
 
 var shipImg = new Image();
 var enemyImg = new Image();
@@ -59,15 +61,12 @@ function keyUpHandler(e) {
         shipStatus = false;
     }
 }
-function showText() {
-    if (shipStatus) {
 
-    }
-}
-var init_start = true;
-var init_text_value = true;
+
 
 function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue) {
+
+
     if (initValue) {
         if (shipStatus == false) {
             ctx.fillStyle = 'white';
@@ -78,6 +77,7 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
             return true;
         }
         else {
+            
             ship = {
                 x: (canvas.width - shipSize) / 2,
                 y: canvas.height - shipSize,
@@ -122,6 +122,8 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
     }
 
     else if (shipStatus) {
+        scoreValue = 0;
+
         for (var i = 0; i < 100; i++) {
             bullet[i] = {
                 x: ship.x + ship.w / 2,
@@ -177,7 +179,7 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
 function drowShip() {
     if (ship.superPower) {
         ctx.drawImage(goldshipImg, ship.x, ship.y, ship.w, ship.h);
-        // continue;
+
     } else {
         ctx.drawImage(shipImg, ship.x, ship.y, ship.w, ship.h);
     }
@@ -269,7 +271,7 @@ function checkheart() {
         }
     }
     if (count == heartCount) {
-        return true;
+        shipStatus = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue);
     }
     return false;
 }
@@ -347,6 +349,7 @@ function attack() {
                         (bullet[j].by >= enemyStatus[i].y && bullet[j].by <= enemyStatus[i].by)) {
                         enemyStatus[i].status = 0;
                         bullet[j].status = false;
+                        scoreValue += 1;
                     }
                 }
             }
@@ -356,26 +359,39 @@ function attack() {
 
 var initValue = true;
 
-function draw() {
+function initDraw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (initValue) {
         initValue = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue);
     }
-    else {
-        if (checkheart()) {
-            shipStatus = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue);
-
-        } else {
-            drawAllEnemies();
-            drowHeart();
-            drowShip();
-            drowbullet();
-            deleteHeart();
-            attack();
-
-        }
+    else{
+        cancelAnimationFrame(initDraw);
+        draw();
+        return;
     }
+    requestAnimationFrame(initDraw);
+
+}
+
+
+function score(){
+    ctx.fillText('Score : ' + scoreValue, 10, 70);
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        checkheart()
+        drawAllEnemies();
+        drowHeart();
+        drowShip();
+        drowbullet();
+        deleteHeart();
+        attack();
+        score();
+    
     requestAnimationFrame(draw);
 }
 
-draw();
+initDraw(); 
+
