@@ -312,7 +312,7 @@ function drowbullet() {
     }
     for (var i = 0; i < 100; i++) {
         if (bullet[i].status == true) {
-            bullet[i].a *= 1.02
+            bullet[i].a *= 1.06
             bullet[i].y -= bullet[i].a;
             ctx.drawImage(bullet[i].img, bullet[i].x, bullet[i].y, bullet[i].w, bullet[i].h);
             if (bullet[i].y < 0.1) {
