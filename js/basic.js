@@ -54,9 +54,57 @@ function keyUpHandler(e) {
 		shipStatus = false;
 	}
 }
+function showText(){
+    if (shipStatus){
+        
+    }
+}
+var init_start = true;
+var init_text_value = true;
 
-function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount) {
-	if (shipStatus) {
+function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, initValue) {
+    if (initValue){
+        if(shipStatus == false){
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 30px Lato';
+        ctx.fillText("Press 'Space' Start",
+        canvas.width / 2 - ctx.measureText("Press 'Space' Start").width / 2,
+        canvas.height / 2 - 20);
+        return true; 
+        }
+        else{
+            ship = {
+                x: (canvas.width - shipSize) / 2,
+                y: canvas.height - shipSize,
+                w: shipSize,
+                h: shipSize,
+                superPower: false
+            };
+            for (var i = 0; i < heartCount; i++) {
+                heartStatus[i] = {
+                    x: i * 30,
+                    y: 0,
+                    w: heartSize,
+                    h: heartSize,
+                    img: heartImg,
+                    status: 0
+                }
+            }
+            for (var i = 0; i < enemyCount; i++) {
+                enemyStatus[i] = {
+                    x: 0,
+                    y: 0,
+                    w: enemySize,
+                    h: enemySize,
+                    img: enemyImg,
+                    status: 0
+                }
+            }
+            return false; 
+        }
+    }
+
+    if (shipStatus) {
         ship = {
             x: (canvas.width - shipSize) / 2,
             y: canvas.height - shipSize,
@@ -86,6 +134,13 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
 		}
 		return false;
 	}
+    else{
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 30px Lato';
+        ctx.fillText("Press 'Space' ReStart",
+        canvas.width / 2 - ctx.measureText("Press 'Space' ReStart").width / 2,
+        canvas.height / 2 - 20);
+    }
 }
 
 
@@ -210,11 +265,19 @@ function drowHeart() {
 }
 
 
+var initValue = true;
+
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	if (checkheart()) {
-		shipStatus = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
+    if (initValue){
+        initValue = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, initValue);
+        shipStatus = false;
+    }
+  else{
+    if (checkheart()) {
+        // checkShowText();
+        shipStatus = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount,  initValue);
+        
 	} else {
 		drawAllEnemies();
 		drowHeart();
@@ -226,9 +289,10 @@ function draw() {
 
 		}
 	}
+  }
+	
 
 	requestAnimationFrame(draw);
 }
 
-init(true, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount);
 draw();
