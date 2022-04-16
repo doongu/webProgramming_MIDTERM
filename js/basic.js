@@ -72,8 +72,8 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
         if (shipStatus == false) {
             ctx.fillStyle = 'white';
             ctx.font = 'bold 30px Lato';
-            ctx.fillText("Press 'Space' Start",
-                canvas.width / 2 - ctx.measureText("Press 'Space' Start").width / 2,
+            ctx.fillText("Press 'Space' to Start",
+                canvas.width / 2 - ctx.measureText("Press 'Space' to Start").width / 2,
                 canvas.height / 2 - 20);
             return true;
         }
@@ -87,9 +87,9 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
             };
             for (var i = 0; i < 100; i++) {
                 bullet[i] = {
-                    x: ship.x,
+                    x: ship.x + ship.w / 2,
                     y: ship.y,
-                    w: bulletSize,
+                    w: bulletSize / 4,
                     h: bulletSize,
                     img: bulletImg,
                     speed: bulletSpeed,
@@ -117,16 +117,16 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
                     status: 0
                 }
             }
-            return false;
+            shipStatus = false;
         }
     }
 
-    if (shipStatus) {
+    else if (shipStatus) {
         for (var i = 0; i < 100; i++) {
             bullet[i] = {
-                x: ship.x,
+                x: ship.x + ship.w / 2,
                 y: ship.y,
-                w: bulletSize,
+                w: bulletSize / 4,
                 h: bulletSize,
                 img: bulletImg,
                 speed: bulletSpeed,
@@ -166,8 +166,8 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
     else {
         ctx.fillStyle = 'white';
         ctx.font = 'bold 30px Lato';
-        ctx.fillText("Press 'Space' ReStart",
-            canvas.width / 2 - ctx.measureText("Press 'Space' ReStart").width / 2,
+        ctx.fillText("Press 'Space' to ReStart",
+            canvas.width / 2 - ctx.measureText("Press 'Space' to ReStart").width / 2,
             canvas.height / 2 - 20);
     }
 }
@@ -301,9 +301,10 @@ function drowbullet() {
         for (var i = 0; i < 100; i++) {
             // bulletCheck()
             if (bullet[i].status == false) {
-                bullet[i].x = ship.x;
+                bullet[i].x = ship.x + ship.w / 2 - (bullet[i].w / 2);
                 bullet[i].y = ship.y;
                 bullet[i].status = true
+                bullet[i].a = 1;
                 break
             }
         }
@@ -311,13 +312,14 @@ function drowbullet() {
     }
     for (var i = 0; i < 100; i++) {
         if (bullet[i].status == true) {
-            bullet[i].y -= bullet[i].speed;
+            bullet[i].a *= 1.02
+            bullet[i].y -= bullet[i].a;
             ctx.drawImage(bullet[i].img, bullet[i].x, bullet[i].y, bullet[i].w, bullet[i].h);
-            if (bullet[i].y < 0) {
+            if (bullet[i].y < 0.1) {
                 bullet[i] = {
-                    x: ship.x,
+                    x: ship.x + ship.w / 2,
                     y: ship.y,
-                    w: bulletSize,
+                    w: bulletSize / 4,
                     h: bulletSize,
                     img: bulletImg,
                     speed: bulletSpeed,
@@ -326,14 +328,38 @@ function drowbullet() {
             }
         }
     }
+    shipStatus = false;
 }
+
+function attack() {
+    for (var i = 0; i < enemyCount; i++) {
+        if (enemyStatus[i].status == 0) {
+            continue;
+        }
+        for (var j = 0; j < 100; j++) {
+            if (bullet[j].status == true) {
+                bullet[j].rx = bullet[j].x + bullet[j].w;
+                bullet[j].by = bullet[j].y + bullet[j].h;
+                enemyStatus[i].rx = enemyStatus[i].x + enemyStatus[i].w;
+                enemyStatus[i].by = enemyStatus[i].y + enemyStatus[i].h;
+                if ((bullet[j].x >= enemyStatus[i].x && bullet[j].x <= enemyStatus[i].rx) || (bullet[j].rx >= enemyStatus[i].x && bullet[j].rx <= enemyStatus[i].rx)) {
+                    if ((bullet[j].y >= enemyStatus[i].y && bullet[j].y <= enemyStatus[i].by) ||
+                        (bullet[j].by >= enemyStatus[i].y && bullet[j].by <= enemyStatus[i].by)) {
+                        enemyStatus[i].status = 0;
+                        bullet[j].status = false;
+                    }
+                }
+            }
+        }
+    }
+}
+
 var initValue = true;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (initValue) {
         initValue = init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue);
-        shipStatus = false;
     }
     else {
         if (checkheart()) {
@@ -343,12 +369,12 @@ function draw() {
             drawAllEnemies();
             drowHeart();
             drowShip();
-            shipStatus = drowbullet();
+            drowbullet();
             deleteHeart();
+            attack();
 
         }
     }
-
     requestAnimationFrame(draw);
 }
 
