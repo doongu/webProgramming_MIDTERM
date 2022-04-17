@@ -70,7 +70,7 @@ function keyUpHandler(e) {
 */
 function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, enemyCount, bulletSize, bulletSpeed, initValue) {
 
-// initValue값을 통해 젤처음 시작할 때 텍스트를 띄워준다.
+    // initValue값을 통해 젤처음 시작할 때 텍스트를 띄워준다.
     if (initValue) {
 
         // space를 누르지 않은 상태면 텍스트를 띄운다.
@@ -82,7 +82,7 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
                 canvas.height / 2 - 20);
             return true;
 
-        // space를 눌렀으면 ship, bullet, heart, enemy 값을 초기화해준다.
+            // space를 눌렀으면 ship, bullet, heart, enemy 값을 초기화해준다.
         } else {
 
             ship = {
@@ -126,7 +126,7 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
             }
             shipStatus = false;
         }
-    } 
+    }
 
 
     // 재시작인 경우이다. shipStatus가 true라는 건 space를 눌렀다는 것이므로
@@ -174,8 +174,8 @@ function init(shipStatus, heartSize, heartImg, heartCount, enemySize, enemyImg, 
             }
         }
         return false;
-    } 
-    
+    }
+
     // 재시작인 경우이며, space를 누르지 않은 상태이므로 Space를 눌러달라는 메세지를 출력한다.
     else {
         ctx.fillStyle = 'white';
@@ -210,8 +210,8 @@ function drowShip() {
     if (ship.superPower) {
         ctx.drawImage(goldshipImg, ship.x, ship.y, ship.w, ship.h);
 
-    } 
-    
+    }
+
     // 무적상태가 아니라면, 일반 ship을 그린다
     else {
         ctx.drawImage(shipImg, ship.x, ship.y, ship.w, ship.h);
@@ -229,7 +229,7 @@ function drowShip() {
 function superPower() {
     ship.superPower = true;
     // setTimeout함수를 통해 2초뒤 무적상태를 해제해준다.
-    setTimeout(function() {
+    setTimeout(function () {
         ship.superPower = false;
     }, 2000);
 }
@@ -325,7 +325,7 @@ function drowHeart() {
 
 // 매번 하트가 다 사용되었는지 확인
 function checkHeart() {
-    var count = 0;  
+    var count = 0;
     for (var i = 0; i < heartCount; i++) {
         if (heartStatus[i].status == 1) {
             count += 1;
@@ -396,7 +396,7 @@ function score() {
 }
 
 
-
+// 공격함수
 function attack() {
     for (var i = 0; i < enemyCount; i++) {
         if (enemyStatus[i].status == 0) {
@@ -411,6 +411,7 @@ function attack() {
                 if ((bullet[j].x >= enemyStatus[i].x && bullet[j].x <= enemyStatus[i].rx) || (bullet[j].rx >= enemyStatus[i].x && bullet[j].rx <= enemyStatus[i].rx)) {
                     if ((bullet[j].y >= enemyStatus[i].y && bullet[j].y <= enemyStatus[i].by) ||
                         (bullet[j].by >= enemyStatus[i].y && bullet[j].by <= enemyStatus[i].by)) {
+                        //총알과 적이 부딪히면 총알과 적을 삭제하고 score가 올라간다.
                         enemyStatus[i].status = 0;
                         bullet[j].status = false;
                         scoreValue += 1;
